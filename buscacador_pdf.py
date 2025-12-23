@@ -18,16 +18,17 @@ class BuscaPDF(BoxLayout):
         self.termo_input = TextInput(hint_text="Digite o termo")
         self.add_widget(self.termo_input)
 
-        # Botões
+        # Botão Buscar
         self.buscar_btn = Button(text="🔍 Buscar")
         self.buscar_btn.bind(on_press=self.iniciar_busca)
         self.add_widget(self.buscar_btn)
 
+        # Botão Exportar
         self.exportar_btn = Button(text="⬇️ Exportar CSV")
         self.exportar_btn.bind(on_press=self.exportar_csv)
         self.add_widget(self.exportar_btn)
 
-        # Área resultados
+        # Área de resultados
         self.resultados = TextInput(hint_text="Resultados da busca", readonly=True)
         self.add_widget(self.resultados)
 
