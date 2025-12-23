@@ -19,17 +19,17 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Instalar dependências
+    - name: Instalar dependências do sistema
       run: |
         sudo apt update
         sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
         pip install --upgrade pip
-        pip install cython buildozer kivy
+        pip install cython buildozer
 
     - name: Inicializar Buildozer
       run: |
-        buildozer init
-        # Ajuste o buildozer.spec conforme seu app (nome, ícone, permissões etc.)
+        buildozer init || true
+        # O arquivo buildozer.spec já está no repositório
 
     - name: Compilar APK
       run: |
