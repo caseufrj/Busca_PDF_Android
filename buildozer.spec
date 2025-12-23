@@ -19,17 +19,14 @@ orientation = portrait
 # Permissões necessárias
 android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 
-# Módulos Python usados
-requirements = python3,kivy,pillow,pdfminer.six,pytesseract
+# Dependências Python
+requirements = python3,kivy,pillow,pdfminer.six,pdf2image,easyocr
 
 # Incluir arquivos extras (ícones, etc.)
 source.include_exts = py,png,jpg,ico,kv
 
 # Pasta onde o APK será gerado
 dist.dir = bin
-
-# Ativar suporte a OCR (Tesseract precisa ser incluído manualmente ou via lib)
-# Dependendo da complexidade, pode ser necessário compilar bibliotecas nativas.
 
 [buildozer]
 # Plataforma alvo
