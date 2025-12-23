@@ -4,8 +4,7 @@ import unicodedata
 import re
 from pdfminer.high_level import extract_text
 from pdf2image import convert_from_path
-from PIL import Image, ImageEnhance, ImageFilter
-import pytesseract
+import easyocr
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -20,13 +19,6 @@ def normalizar(texto):
 def limpar_ocr(texto):
     return re.sub(r'[^a-zA-Z0-9]', '', texto).lower()
 
-def preprocessar(imagem):
-    img = imagem.convert("L")
-    img = ImageEnhance.Contrast(img).enhance(3)
-    img = img.filter(ImageFilter.SHARPEN)
-    img = img.point(lambda x: 0 if x < 128 else 255, '1')
-    return img
-
 def destacar_termo(texto, termo):
     return re.sub(f"({re.escape(termo)})", r">>>\1<<<", texto, flags=re.IGNORECASE)
 
@@ -34,6 +26,9 @@ def destacar_termo(texto, termo):
 def buscar_em_pdfs(pasta, termo):
     resultados = []
     termo_normalizado = limpar_ocr(normalizar(termo))
+
+    # Inicializa OCR uma vez
+    reader = easyocr.Reader(['pt', 'en'])
 
     for arquivo in os.listdir(pasta):
         if arquivo.lower().endswith(".pdf"):
@@ -48,15 +43,13 @@ def buscar_em_pdfs(pasta, termo):
                         resultados.append((arquivo, "?", trecho, "Texto embutido"))
                     continue
 
-                # Se não houver texto, usa OCR
-                imagens = convert_from_path(caminho, dpi=300)
+                # Se não houver texto, usa OCR com EasyOCR
+                imagens = convert_from_path(caminho, dpi=200)
                 texto_total = ""
                 for img in imagens:
-                    texto_total += pytesseract.image_to_string(
-                        preprocessar(img),
-                        lang="por",
-                        config="--psm 6"
-                    ) + "\n"
+                    resultado = reader.readtext(img)
+                    for _, texto, _ in resultado:
+                        texto_total += texto + " "
 
                 texto_normalizado = limpar_ocr(normalizar(texto_total))
                 if termo_normalizado in texto_normalizado:
